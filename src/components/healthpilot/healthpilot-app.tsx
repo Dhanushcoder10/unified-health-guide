@@ -1,8 +1,8 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  Activity, AlertTriangle, ArrowRight, Bot, CalendarDays, Check, ChevronRight, ClipboardList,
+  Activity, AlertTriangle, Ambulance, ArrowRight, Bot, CalendarDays, Check, ChevronRight, ClipboardList,
   CloudUpload, Droplets, FileHeart, HeartPulse, Home, Languages, Lightbulb, Menu, MessageCircle,
-  Mic, Moon, Pill, Plus, Settings, ShieldCheck, Stethoscope, UserRound, Watch, X,
+  Mic, Moon, Pencil, PersonStanding, Pill, Plus, Settings, ShieldCheck, Smartphone, Stethoscope, UserRound, Watch, Wind, X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { UIMessage } from "ai";
@@ -12,22 +12,25 @@ import { Message, MessageContent, MessageResponse } from "@/components/ai-elemen
 import { PromptInput, PromptInputFooter, PromptInputSubmit, PromptInputTextarea } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { answerHealthQuestion, compareRows, journeyEvents, records, translations, type ChatThread, type JourneyEvent, type Language } from "@/lib/health-data";
 import { defaultHealthState, loadHealthState, saveHealthState, type HealthState } from "@/lib/health-store";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "journey" | "records" | "copilot" | "medications" | "appointments" | "insights" | "profile" | "settings";
+type Section = "dashboard" | "journey" | "records" | "copilot" | "medications" | "appointments" | "insights" | "exercises" | "emergency" | "profile" | "settings";
 
 const sectionPath: Record<Section, string> = {
   dashboard: "/", journey: "/journey", records: "/records", copilot: "/copilot", medications: "/medications",
-  appointments: "/appointments", insights: "/insights", profile: "/profile", settings: "/settings",
+  appointments: "/appointments", insights: "/insights", exercises: "/exercises", emergency: "/emergency", profile: "/profile", settings: "/settings",
 };
 
 const icons: Record<Section, typeof Home> = {
   dashboard: Home, journey: Activity, records: FileHeart, copilot: Bot, medications: Pill,
-  appointments: CalendarDays, insights: Lightbulb, profile: UserRound, settings: Settings,
+  appointments: CalendarDays, insights: Lightbulb, exercises: PersonStanding, emergency: Ambulance, profile: UserRound, settings: Settings,
 };
+
+const sectionLabel: Record<Section, string> = { dashboard: "Dashboard", journey: "Health Journey", records: "Medical Records", copilot: "AI Copilot", medications: "Medications", appointments: "Appointments", insights: "Insights", exercises: "Healthy Exercises", emergency: "Emergency Services", profile: "Profile", settings: "Settings" };
 
 const eventIcon = { visit: Stethoscope, test: Activity, result: FileHeart, prescription: Pill, followup: HeartPulse };
 
@@ -44,6 +47,7 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
   const [uploadOpen, setUploadOpen] = useState(false);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<JourneyEvent | null>(null);
   const [toast, setToast] = useState("");
   const language = state.language;
@@ -88,7 +92,7 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
           {(Object.keys(sectionPath) as Section[]).map((item) => {
             const Icon = icons[item];
             const active = item === section || (item === "copilot" && section === "copilot");
-            return <Link key={item} to={sectionPath[item]} className={cn("flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground", active && "bg-sidebar-accent text-sidebar-primary shadow-inset")}><Icon className="size-4 shrink-0" /><span>{t[item]}</span></Link>;
+            return <Link key={item} to={sectionPath[item]} className={cn("flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground", active && "bg-sidebar-accent text-sidebar-primary shadow-inset")}><Icon className="size-4 shrink-0" /><span>{item in t ? t[item as keyof typeof t] : sectionLabel[item]}</span></Link>;
           })}
         </nav>
         <div className="m-4 border-t border-sidebar-border pt-4">
@@ -99,7 +103,7 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-border/70 bg-background/90 px-4 backdrop-blur-xl lg:px-8">
           <Button className="md:hidden" size="icon" variant="ghost" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
-          <div className="min-w-0"><p className="truncate text-sm font-semibold">{t[section]}</p><p className="truncate text-xs text-muted-foreground">ABHA 91-2387-4456-1209</p></div>
+          <div className="min-w-0"><p className="truncate text-sm font-semibold">{section in t ? t[section as keyof typeof t] : sectionLabel[section]}</p><p className="truncate text-xs text-muted-foreground">{state.patientName}</p></div>
           <div className="flex shrink-0 items-center gap-2">
             <div className="hidden items-center rounded-md border border-border bg-muted p-1 sm:flex">
               <button className={cn("rounded px-2 py-1 text-xs font-semibold", language === "en" && "bg-background text-primary shadow-sm")} onClick={() => setLanguage("en")}>English</button>
@@ -107,7 +111,8 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
             </div>
             <Button size="icon" variant="outline" onClick={() => setLanguage(language === "en" ? "te" : "en")} aria-label="Switch language" className="sm:hidden"><Languages /></Button>
             <Button variant="outline" className="hidden sm:inline-flex" onClick={() => setDeviceOpen(true)}><Watch />{state.deviceConnected ? "Synced" : t.connect}</Button>
-            <div className="grid size-9 place-items-center rounded-full bg-secondary font-bold text-secondary-foreground">AN</div>
+            <Button size="icon" variant="ghost" onClick={() => setProfileOpen(true)} aria-label="Edit names"><Pencil /></Button>
+            <button onClick={() => setProfileOpen(true)} aria-label="Edit profile names" className="grid size-9 place-items-center rounded-full bg-secondary font-bold text-secondary-foreground">{getInitials(state.patientName)}</button>
           </div>
         </header>
 
@@ -117,9 +122,11 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
           {section === "records" && <RecordsPage onUpload={() => setUploadOpen(true)} onAlert={() => setAlertOpen(true)} onAsk={(q) => createThread(q)} />}
           {section === "copilot" && <CopilotPage state={state} setState={setState} threadId={threadId} onNew={() => createThread()} />}
           {section === "medications" && <MedicationsPage state={state} setState={setState} notify={setToast} />}
-          {section === "appointments" && <AppointmentsPage onAsk={(q) => createThread(q)} />}
+          {section === "appointments" && <AppointmentsPage doctorName={state.doctorName} onAsk={(q) => createThread(q)} />}
           {section === "insights" && <InsightsPage onAsk={(q) => createThread(q)} />}
-          {section === "profile" && <ProfilePage />}
+          {section === "exercises" && <ExercisesPage />}
+          {section === "emergency" && <EmergencyPage />}
+          {section === "profile" && <ProfilePage state={state} onEdit={() => setProfileOpen(true)} />}
           {section === "settings" && <SettingsPage state={state} setState={setState} />}
         </main>
       </div>
@@ -127,11 +134,14 @@ export function HealthPilotApp({ section, threadId }: { section: Section; thread
       <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} onSaved={() => { setUploadOpen(false); setToast("Record saved and connected to your journey"); }} onCritical={() => { setUploadOpen(false); setAlertOpen(true); }} />
       <DeviceDialog open={deviceOpen} onOpenChange={setDeviceOpen} onConnect={() => { setState((current) => ({ ...current, deviceConnected: true, metrics: { steps: 8472, heartRate: 74, sleep: 7.6, water: 7 } })); setDeviceOpen(false); setToast("Wearable data synchronized"); }} />
       <AlertDialog open={alertOpen} onOpenChange={setAlertOpen} />
+      <ProfileDialog open={profileOpen} onOpenChange={setProfileOpen} state={state} setState={setState} />
       <EventDialog event={selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)} onAsk={(q) => { setSelectedEvent(null); createThread(q); }} />
       {toast && <div className="fixed bottom-5 left-1/2 z-[80] flex -translate-x-1/2 items-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-semibold text-background shadow-xl"><Check className="size-4 text-health-green" />{toast}</div>}
     </div>
   );
 }
+
+function getInitials(name: string) { return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("") || "HP"; }
 
 function Dashboard({ language, state, onUpload, onAsk, onDevice, onEvent, onAlert }: { language: Language; state: HealthState; onUpload: () => void; onAsk: () => void; onDevice: () => void; onEvent: (e: JourneyEvent) => void; onAlert: () => void }) {
   const t = translations[language];
