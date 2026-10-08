@@ -151,7 +151,7 @@ function Dashboard({ language, state, onUpload, onAsk, onDevice, onEvent, onAler
   </div>;
 }
 
-function SectionHeading({ eyebrow, title, action }: { eyebrow: string; title: string; action?: ReactNode }) { return <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4"><div className="min-w-0"><p className="text-xs font-bold uppercase text-primary">{eyebrow}</p><h2 className="mt-1 truncate font-display text-2xl font-semibold sm:text-3xl">{title}</h2></div>{action}</div>; }
+function SectionHeading({ eyebrow, title, action }: { eyebrow: string; title: string; action?: ReactNode }) { return <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4"><div className="min-w-0"><p className="text-xs font-bold uppercase text-primary">{eyebrow}</p><h2 className="mt-1 break-words font-display text-2xl font-semibold sm:text-3xl">{title}</h2></div>{action}</div>; }
 
 function JourneyStrip({ onEvent }: { onEvent: (e: JourneyEvent) => void }) { return <div className="overflow-x-auto rounded-lg border border-border bg-card p-6 shadow-soft"><div className="relative grid min-w-[760px] grid-cols-5 gap-4 before:absolute before:left-[9%] before:right-[9%] before:top-7 before:border-t before:border-dashed before:border-primary/50">{journeyEvents.map((event) => { const Icon = eventIcon[event.type]; return <button key={event.id} onClick={() => onEvent(event)} className="group relative z-10 flex flex-col items-center text-center"><div className="grid size-14 place-items-center rounded-full border border-primary/30 bg-background text-primary transition-transform group-hover:-translate-y-1 group-hover:shadow-soft"><Icon className="size-5" /></div><span className="mt-3 text-[10px] font-bold text-muted-foreground">{event.shortDate}</span><span className="mt-1 text-sm font-semibold">{event.title}</span></button>; })}</div></div>; }
 
@@ -173,6 +173,13 @@ function CopilotPage({ state, setState, threadId, onNew }: { state: HealthState;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const active = state.threads.find((thread) => thread.id === threadId);
   const thread = active ?? state.threads[0];
+  useEffect(() => {
+    if (thread) return;
+    const id = crypto.randomUUID();
+    const initialThread: ChatThread = { id, title: "New health question", updatedAt: Date.now(), messages: [] };
+    setState((current) => ({ ...current, threads: [initialThread, ...current.threads] }));
+    void navigate({ to: "/chat/$threadId", params: { threadId: id } });
+  }, [navigate, setState, thread]);
   useEffect(() => { if (!threadId && thread) void navigate({ to: "/chat/$threadId", params: { threadId: thread.id } }); }, [navigate, thread, threadId]);
   useEffect(() => { textareaRef.current?.focus(); }, [threadId, status]);
   const uiMessages = useMemo<UIMessage[]>(() => (thread?.messages ?? []).map((m) => ({ id: m.id, role: m.role, parts: [{ type: "text", text: m.text }] })), [thread]);
