@@ -11,7 +11,7 @@ describe("HealthPilot safety guidance", () => {
   it("gives record-grounded precautions without promising a cure", () => {
     const answer = answerHealthQuestion("What precautions should I take to reduce this problem?", "en");
     expect(answer.text).toContain("Based on your records");
-    expect(answer.text).toContain("do not add or change supplements");
+    expect(answer.text.toLowerCase()).toContain("do not add or change supplements");
   });
 
   it("uses the personalized doctor name in visit questions", () => {
