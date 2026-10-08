@@ -9,9 +9,9 @@
 
 ## Personalization and guidance refinement
 
-- [ ] Add editable patient and doctor names across the experience
-- [ ] Improve record-grounded Copilot precautions and problem guidance
-- [ ] Remove visible ABHA and sample/demo wording
-- [ ] Add phone device connection, emergency services, and relaxing exercises
-- [ ] Expand upload review with findings, precautions, and urgent escalation
+- [x] Add editable patient and doctor names across the experience
+- [x] Improve record-grounded Copilot precautions and problem guidance
+- [x] Remove visible ABHA and sample/demo wording
+- [x] Add phone device connection, emergency services, and relaxing exercises
+- [x] Expand upload review with findings, precautions, and urgent escalation
 - [ ] Verify the updated desktop and mobile flows

@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as CopilotRouteImport } from './routes/copilot'
+import { Route as EmergencyRouteImport } from './routes/emergency'
+import { Route as ExercisesRouteImport } from './routes/exercises'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as MedicationsRouteImport } from './routes/medications'
@@ -33,6 +35,16 @@ const AppointmentsRoute = AppointmentsRouteImport.update({
 const CopilotRoute = CopilotRouteImport.update({
   id: '/copilot',
   path: '/copilot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmergencyRoute = EmergencyRouteImport.update({
+  id: '/emergency',
+  path: '/emergency',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExercisesRoute = ExercisesRouteImport.update({
+  id: '/exercises',
+  path: '/exercises',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsightsRoute = InsightsRouteImport.update({
@@ -75,6 +87,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/copilot': typeof CopilotRoute
+  '/emergency': typeof EmergencyRoute
+  '/exercises': typeof ExercisesRoute
   '/insights': typeof InsightsRoute
   '/journey': typeof JourneyRoute
   '/medications': typeof MedicationsRoute
@@ -87,6 +101,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/copilot': typeof CopilotRoute
+  '/emergency': typeof EmergencyRoute
+  '/exercises': typeof ExercisesRoute
   '/insights': typeof InsightsRoute
   '/journey': typeof JourneyRoute
   '/medications': typeof MedicationsRoute
@@ -100,6 +116,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/copilot': typeof CopilotRoute
+  '/emergency': typeof EmergencyRoute
+  '/exercises': typeof ExercisesRoute
   '/insights': typeof InsightsRoute
   '/journey': typeof JourneyRoute
   '/medications': typeof MedicationsRoute
@@ -114,6 +132,8 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/copilot'
+    | '/emergency'
+    | '/exercises'
     | '/insights'
     | '/journey'
     | '/medications'
@@ -126,6 +146,8 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/copilot'
+    | '/emergency'
+    | '/exercises'
     | '/insights'
     | '/journey'
     | '/medications'
@@ -138,6 +160,8 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/copilot'
+    | '/emergency'
+    | '/exercises'
     | '/insights'
     | '/journey'
     | '/medications'
@@ -151,6 +175,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppointmentsRoute: typeof AppointmentsRoute
   CopilotRoute: typeof CopilotRoute
+  EmergencyRoute: typeof EmergencyRoute
+  ExercisesRoute: typeof ExercisesRoute
   InsightsRoute: typeof InsightsRoute
   JourneyRoute: typeof JourneyRoute
   MedicationsRoute: typeof MedicationsRoute
@@ -181,6 +207,20 @@ declare module '@tanstack/react-router' {
       path: '/copilot'
       fullPath: '/copilot'
       preLoaderRoute: typeof CopilotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/emergency': {
+      id: '/emergency'
+      path: '/emergency'
+      fullPath: '/emergency'
+      preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercises': {
+      id: '/exercises'
+      path: '/exercises'
+      fullPath: '/exercises'
+      preLoaderRoute: typeof ExercisesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insights': {
@@ -239,6 +279,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppointmentsRoute: AppointmentsRoute,
   CopilotRoute: CopilotRoute,
+  EmergencyRoute: EmergencyRoute,
+  ExercisesRoute: ExercisesRoute,
   InsightsRoute: InsightsRoute,
   JourneyRoute: JourneyRoute,
   MedicationsRoute: MedicationsRoute,
