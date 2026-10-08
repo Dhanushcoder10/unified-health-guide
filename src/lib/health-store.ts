@@ -3,6 +3,8 @@ import { initialMedications } from "./health-data";
 
 export type HealthState = {
   language: Language;
+  patientName: string;
+  doctorName: string;
   medications: Medication[];
   threads: ChatThread[];
   deviceConnected: boolean;
@@ -13,6 +15,8 @@ const KEY = "healthpilot-state-v1";
 
 export const defaultHealthState: HealthState = {
   language: "en",
+  patientName: "Ananya Rao",
+  doctorName: "Dr. Kiran Reddy",
   medications: initialMedications,
   threads: [],
   deviceConnected: false,
