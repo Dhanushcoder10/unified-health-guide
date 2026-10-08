@@ -14,4 +14,4 @@
 - [x] Remove visible ABHA and sample/demo wording
 - [x] Add phone device connection, emergency services, and relaxing exercises
 - [x] Expand upload review with findings, precautions, and urgent escalation
-- [ ] Verify the updated desktop and mobile flows
+- [x] Verify the updated desktop and mobile flows

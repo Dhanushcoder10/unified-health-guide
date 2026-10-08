@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep HealthPilot demo domain state in the browser repository layer so all routes share synchronized records, medicines, devices, and chat without a backend.
+- Keep HealthPilot domain state in the browser repository layer so all routes share synchronized profiles, records, medicines, devices, and chat without a backend.
