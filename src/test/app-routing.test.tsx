@@ -14,4 +14,12 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it.each(["/journey", "/records", "/copilot", "/medications", "/appointments", "/insights", "/profile", "/settings"])(
+    "matches the HealthPilot page at %s",
+    (path) => {
+      const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+      expect(router.matchRoutes(path).at(-1)?.routeId).not.toBe(rootRouteId);
+    },
+  );
 });

@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { HealthPilotApp } from "@/components/healthpilot/healthpilot-app";
+export const Route=createFileRoute("/records")({head:()=>({meta:[{title:"Medical Records — HealthPilot AI"},{name:"description",content:"Review, explain and compare connected medical records."},{property:"og:title",content:"Medical Records — HealthPilot AI"},{property:"og:description",content:"Understand what changed across your health records."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:()=> <HealthPilotApp section="records"/>});
