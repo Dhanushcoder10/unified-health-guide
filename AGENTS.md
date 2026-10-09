@@ -10,3 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep HealthPilot domain state in the browser repository layer so all routes share synchronized profiles, records, medicines, devices, and chat without a backend.
+- Keep appearance preferences in the browser repository and apply semantic dark tokens at the document root so dialogs and all routes share the theme.
+- Localize UI through a shared React language context and retain bilingual Copilot replies alongside their original messages so language switching never discards conversation history.

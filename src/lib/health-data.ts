@@ -22,7 +22,7 @@ export type Medication = {
   takenAt?: string;
 };
 
-export type ChatMessage = { id: string; role: "user" | "assistant"; text: string; sources?: string[] };
+export type ChatMessage = { id: string; role: "user" | "assistant"; text: string; sources?: string[]; localizedText?: Partial<Record<Language, string>> };
 export type ChatThread = { id: string; title: string; updatedAt: number; messages: ChatMessage[] };
 
 export const journeyEvents: JourneyEvent[] = [
@@ -121,7 +121,7 @@ export const translations = {
 };
 
 export function answerHealthQuestion(input: string, language: Language, patientName = "there", doctorName = "your doctor"): { text: string; sources: string[] } {
-  const q = input.toLowerCase();
+  const q = input.toLowerCase().replace(/హీమోగ్లోబిన్|రక్తహీనత|ఐరన్/g, " haemoglobin ").replace(/విటమిన్ డి|విటమిన్ డీ|విటమిన్ D/g, " vitamin d ").replace(/గ్లూకోజ్|చక్కెర|మధుమేహం/g, " glucose ").replace(/అలర్జీ/g, " allergy ").replace(/రక్త వర్గం|రక్త గ్రూపు/g, " blood group ").replace(/అపాయింట్‌మెంట్|తదుపరి సందర్శన/g, " appointment ").replace(/అలసట/g, " tired ").replace(/జాగ్రత్త|తగ్గించ|ఆహారం/g, " precaution ").replace(/వ్యాయామ|విశ్రాంతి|ఒత్తిడి|నిద్ర/g, " relax ").replace(/అత్యవసర|అంబులెన్స్/g, " emergency ").replace(/వైద్యు|డాక్టర్|ప్రశ్న/g, " doctor ");
   const telugu = language === "te";
   if (/^(hi|hello|hey|namaste|హాయ్|నమస్కారం)/i.test(input.trim())) {
     return { text: telugu ? `నమస్కారం ${patientName}. మీ రికార్డులు, మందులు లేదా తదుపరి వైద్య సందర్శన గురించి ఏం తెలుసుకోవాలనుకుంటున్నారు?` : `Hello ${patientName}. I can help you understand your records, medicines, changes, precautions, or prepare for your next visit. What would you like to know?`, sources: [] };

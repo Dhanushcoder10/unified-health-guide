@@ -15,3 +15,8 @@
 - [x] Add phone device connection, emergency services, and relaxing exercises
 - [x] Expand upload review with findings, precautions, and urgent escalation
 - [x] Verify the updated desktop and mobile flows
+
+## Appearance and full-site language
+- [ ] Add saved light and dark controls
+- [ ] Translate all pages, dialogs, and existing chats into Telugu
+- [ ] Verify language switching, saved appearance, and chat history
