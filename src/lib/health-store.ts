@@ -2,6 +2,7 @@ import type { ChatThread, Language, Medication } from "./health-data";
 import { initialMedications } from "./health-data";
 
 export type HealthState = {
+  theme: "light" | "dark";
   language: Language;
   patientName: string;
   doctorName: string;
@@ -14,6 +15,7 @@ export type HealthState = {
 const KEY = "healthpilot-state-v1";
 
 export const defaultHealthState: HealthState = {
+  theme: "light",
   language: "en",
   patientName: "Ananya Rao",
   doctorName: "Dr. Kiran Reddy",
